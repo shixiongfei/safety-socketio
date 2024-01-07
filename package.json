@@ -1,0 +1,42 @@
+{
+  "name": "safety-socketio",
+  "version": "0.1.0",
+  "description": "Safety Socket.IO",
+  "main": "./lib/src/index.js",
+  "types": "./lib/src/index.d.ts",
+  "files": [
+    "lib/"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "start": "tsc -w",
+    "test": "tsc && node lib/test/test.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/shixiongfei/safety-socketio.git"
+  },
+  "keywords": [
+    "socket-io",
+    "safety"
+  ],
+  "author": "shixiongfei",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/shixiongfei/safety-socketio/issues"
+  },
+  "homepage": "https://github.com/shixiongfei/safety-socketio#readme",
+  "dependencies": {
+    "@msgpack/msgpack": "^2.8.0",
+    "crypto-js": "^4.2.0"
+  },
+  "devDependencies": {
+    "@types/crypto-js": "^4.2.1",
+    "@types/node": "^20.10.6",
+    "@typescript-eslint/eslint-plugin": "^6.17.0",
+    "@typescript-eslint/parser": "^6.17.0",
+    "eslint": "^8.56.0",
+    "prettier": "^3.1.1",
+    "typescript": "^5.3.3"
+  }
+}
