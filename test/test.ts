@@ -9,8 +9,8 @@
  * https://github.com/shixiongfei/safety-socketio
  */
 
-import createNodeCodec from "../src/node";
-import createBrowserCodec from "../src/browser";
+import createNodeCodec from "../src/node.js";
+import createBrowserCodec from "../src/browser.js";
 
 const testNode = () => {
   const codec = createNodeCodec("123");

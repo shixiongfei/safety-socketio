@@ -9,14 +9,34 @@
  * https://github.com/shixiongfei/safety-socketio
  */
 
-const [createCodec, isBrowser, isNode] = (function () {
-  if (typeof window !== "undefined" && window.crypto) {
-    return [require("./browser"), true, false];
+const { createCodec } =
+  typeof window !== "undefined" && window.crypto
+    ? require("./browser.js")
+    : require("./node.js");
+
+export const createParser = (key: string) => {
+  const codec: {
+    serialize: <T>(data: T) => Uint8Array;
+    deserialize: <T>(data: ArrayBufferLike) => T;
+  } = createCodec(key);
+
+  class Encoder {
+    encode(packet: unknown) {
+      return [codec.serialize(packet)];
+    }
   }
 
-  if (typeof require === "function") {
-    return [require("./node"), false, true];
-  }
+  return {
+    protocol: 5,
+    PacketType: {
+      CONNECT: 0,
+      DISCONNECT: 1,
+      EVENT: 2,
+      ACK: 3,
+      CONNECT_ERROR: 4,
+    },
+    Encoder,
+  };
+};
 
-  throw new Error("Native crypto module could not found.");
-})();
+export default createParser;
