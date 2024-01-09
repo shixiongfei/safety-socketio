@@ -10,7 +10,7 @@
  */
 
 const { createCodec } =
-  typeof window !== "undefined" && window.crypto
+  typeof window !== 'undefined' && typeof window.document !== 'undefined'
     ? require("./browser.js")
     : require("./node.js");
 
