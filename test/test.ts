@@ -9,6 +9,9 @@
  * https://github.com/shixiongfei/safety-socketio
  */
 
+import { Server } from "socket.io";
+import { io } from "socket.io-client";
+import createParser from "../src/index.js";
 import createNodeCodec from "../src/node.js";
 import createBrowserCodec from "../src/browser.js";
 
@@ -49,6 +52,31 @@ const testCross = () => {
   console.log(d2);
 };
 
+const testSocketIO = () => {
+  const server = new Server(54000, {
+    parser: createParser(createNodeCodec("123")),
+  });
+
+  const client = io("ws://localhost:54000", {
+    parser: createParser(createBrowserCodec("123")),
+  });
+
+  server.on("connection", (socket) => {
+    console.log(socket.id);
+
+    socket.on("hello", () => {
+      client.close();
+      server.close();
+    });
+  });
+
+  client.on("connect", () => {
+    console.log(client.id);
+    client.emit("hello");
+  });
+};
+
 testNode();
 testBrowser();
 testCross();
+testSocketIO();

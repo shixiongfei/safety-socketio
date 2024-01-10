@@ -9,33 +9,128 @@
  * https://github.com/shixiongfei/safety-socketio
  */
 
+import Emitter from "component-emitter";
+
 const { createCodec } =
-  typeof window !== 'undefined' && typeof window.document !== 'undefined'
+  typeof window !== "undefined" && typeof window.document !== "undefined"
     ? require("./browser.js")
     : require("./node.js");
 
-export const createParser = (key: string) => {
-  const codec: {
-    serialize: <T>(data: T) => Uint8Array;
-    deserialize: <T>(data: ArrayBufferLike) => T;
-  } = createCodec(key);
+enum PacketType {
+  CONNECT,
+  DISCONNECT,
+  EVENT,
+  ACK,
+  CONNECT_ERROR,
+}
 
-  class Encoder {
-    encode(packet: unknown) {
-      return [codec.serialize(packet)];
-    }
+type Packet = {
+  type: PacketType;
+  nsp: string;
+  data?: unknown;
+  id?: number;
+};
+
+const isInteger =
+  Number.isInteger ??
+  ((value: unknown) =>
+    typeof value === "number" &&
+    isFinite(value) &&
+    Math.floor(value) === value);
+
+const isString = (value: unknown) => typeof value === "string";
+const isObject = (value: unknown) => typeof value === "object";
+
+const isDataValid = (packet: Packet) => {
+  switch (packet.type) {
+    case PacketType.CONNECT:
+      return packet.data === undefined || isObject(packet.data);
+
+    case PacketType.DISCONNECT:
+      return packet.data === undefined;
+
+    case PacketType.EVENT:
+      return Array.isArray(packet.data) && packet.data.length > 0;
+
+    case PacketType.ACK:
+      return Array.isArray(packet.data);
+
+    case PacketType.CONNECT_ERROR:
+      return isString(packet.data) || isObject(packet.data);
+
+    default:
+      return false;
   }
+};
+
+export type ParserCodec = {
+  serialize: <T>(data: T) => Uint8Array;
+  deserialize: <T>(data: ArrayBufferLike) => T;
+};
+
+export const createParser = (keyOrCodec: string | ParserCodec) => {
+  const codec: ParserCodec = isString(keyOrCodec)
+    ? createCodec(keyOrCodec)
+    : keyOrCodec;
+
+  const Encoder = function () {} as unknown as {
+    new (): { encode(packet: unknown): Uint8Array[] };
+  };
+
+  Encoder.prototype.encode = function (packet: unknown) {
+    return [codec.serialize(packet)];
+  };
+
+  const Decoder = function () {} as unknown as {
+    new (): { add(chunk: ArrayBufferLike): void; destroy(): void };
+  };
+
+  Emitter(Decoder.prototype);
+
+  Decoder.prototype.add = function (chunk: ArrayBufferLike) {
+    const packet = codec.deserialize(chunk);
+    this.checkPacket(packet);
+    this.emit("decoded", packet);
+  };
+
+  Decoder.prototype.destroy = function () {};
+
+  Decoder.prototype.checkPacket = function (packet: Packet) {
+    const isTypeValid =
+      isInteger(packet.type) &&
+      packet.type >= PacketType.CONNECT &&
+      packet.type <= PacketType.CONNECT_ERROR;
+
+    if (!isTypeValid) {
+      throw new Error("invalid packet type");
+    }
+
+    if (!isString(packet.nsp)) {
+      throw new Error("invalid namespace");
+    }
+
+    const isAckValid = packet.id === undefined || isInteger(packet.id);
+
+    if (!isAckValid) {
+      throw new Error("invalid packet id");
+    }
+
+    if (!isDataValid(packet)) {
+      throw new Error("invalid payload");
+    }
+  };
 
   return {
     protocol: 5,
     PacketType: {
-      CONNECT: 0,
-      DISCONNECT: 1,
-      EVENT: 2,
-      ACK: 3,
-      CONNECT_ERROR: 4,
+      CONNECT: PacketType.CONNECT,
+      DISCONNECT: PacketType.DISCONNECT,
+      EVENT: PacketType.EVENT,
+      ACK: PacketType.ACK,
+      CONNECT_ERROR: PacketType.CONNECT_ERROR,
     },
     Encoder,
+    Decoder,
   };
 };
 

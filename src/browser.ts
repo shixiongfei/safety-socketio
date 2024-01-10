@@ -73,7 +73,8 @@ const decrypt = (secret: crypto.lib.WordArray, data: ArrayBufferLike) => {
 export const createCodec = (key: string) => {
   const secret = crypto.MD5(key);
 
-  const serialize = <T>(data: T) => encrypt(secret, encode(data));
+  const serialize = <T>(data: T) =>
+    encrypt(secret, encode(data, { ignoreUndefined: true }));
 
   const deserialize = <T>(data: ArrayBufferLike) =>
     decode(decrypt(secret, data)) as T;

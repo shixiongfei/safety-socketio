@@ -28,6 +28,7 @@
   "homepage": "https://github.com/shixiongfei/safety-socketio#readme",
   "dependencies": {
     "@msgpack/msgpack": "^2.8.0",
+    "component-emitter": "^2.0.0",
     "crypto-js": "^4.2.0"
   },
   "devDependencies": {
@@ -37,6 +38,8 @@
     "@typescript-eslint/parser": "^6.17.0",
     "eslint": "^8.56.0",
     "prettier": "^3.1.1",
+    "socket.io": "^4.7.3",
+    "socket.io-client": "^4.7.3",
     "typescript": "^5.3.3"
   }
 }
