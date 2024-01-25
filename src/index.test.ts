@@ -1,5 +1,5 @@
 /*
- * test.ts
+ * index.test.ts
  *
  * Copyright (c) 2024 Xiongfei Shi
  *
@@ -11,9 +11,9 @@
 
 import { Server } from "socket.io";
 import { io } from "socket.io-client";
-import createParser from "../src/index.js";
-import createNodeCodec from "../src/node.js";
-import createBrowserCodec from "../src/browser.js";
+import createParser from "./index.js";
+import createNodeCodec from "./node.js";
+import createBrowserCodec from "./browser.js";
 
 const testNode = () => {
   const codec = createNodeCodec("123");
