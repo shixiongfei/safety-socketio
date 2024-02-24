@@ -1,5 +1,5 @@
 /*
- * node.ts
+ * codec.ts
  *
  * Copyright (c) 2024 Xiongfei Shi
  *

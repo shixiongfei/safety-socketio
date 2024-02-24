@@ -1,6 +1,6 @@
 {
   "name": "safety-socketio",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Safety Socket.IO",
   "main": "./lib/index.js",
   "types": "./lib/index.d.ts",
@@ -8,6 +8,9 @@
     "lib/",
     "src/"
   ],
+  "browser": {
+    "./lib/codec.js": "./lib/codec.browser.js"
+  },
   "scripts": {
     "build": "tsc",
     "start": "tsc -w",

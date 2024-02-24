@@ -11,9 +11,9 @@
 
 import { Server } from "socket.io";
 import { io } from "socket.io-client";
-import createParser from "./index.js";
-import createNodeCodec from "./node.js";
-import createBrowserCodec from "./browser.js";
+import createParser from "./parser.js";
+import createNodeCodec from "./codec.js";
+import createBrowserCodec from "./codec.browser.js";
 
 const testNode = () => {
   const codec = createNodeCodec("123");

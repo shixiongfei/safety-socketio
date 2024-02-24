@@ -1,5 +1,5 @@
 /*
- * browser.ts
+ * codec.browser.ts
  *
  * Copyright (c) 2024 Xiongfei Shi
  *
