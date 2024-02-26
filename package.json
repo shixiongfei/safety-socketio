@@ -2,19 +2,31 @@
   "name": "safety-socketio",
   "version": "0.1.2",
   "description": "Safety Socket.IO",
-  "main": "./lib/index.js",
-  "types": "./lib/index.d.ts",
+  "main": "./lib/cjs/index.js",
+  "types": "./lib/cjs/index.d.ts",
+  "module": "./lib/esm/index.js",
   "files": [
     "lib/",
     "src/"
   ],
+  "exports": {
+    "import": {
+      "types": "./lib/esm/index.d.ts",
+      "default": "./lib/esm/index.js"
+    },
+    "require": {
+      "types": "./lib/cjs/index.d.ts",
+      "default": "./lib/cjs/index.js"
+    }
+  },
   "browser": {
-    "./lib/codec.js": "./lib/codec.browser.js"
+    "./lib/cjs/codec.js": "./lib/cjs/codec.browser.js",
+    "./lib/esm/codec.js": "./lib/esm/codec.browser.js"
   },
   "scripts": {
-    "build": "tsc",
+    "build": "tsc && tsc -p tsconfig.esm.json",
     "start": "tsc -w",
-    "test": "tsc && node ./lib/index.test.js"
+    "test": "tsc && node ./lib/cjs/index.test.js"
   },
   "repository": {
     "type": "git",
