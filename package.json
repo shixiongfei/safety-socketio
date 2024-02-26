@@ -24,7 +24,7 @@
     "./lib/esm/codec.js": "./lib/esm/codec.browser.js"
   },
   "scripts": {
-    "build": "tsc && tsc -p tsconfig.esm.json",
+    "build": "tsc && tsc -p tsconfig.esm.json && node ./postcompile.js",
     "start": "tsc -w",
     "test": "tsc && node ./lib/cjs/index.test.js"
   },
