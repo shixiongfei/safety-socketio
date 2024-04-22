@@ -10,7 +10,7 @@
  */
 
 import crypto from "crypto-js";
-import { encode, decode } from "@msgpack/msgpack";
+import { decode, encode } from "msgpackr";
 import { ensureUint8Array, concatUint8Arrays } from "./utils.js";
 
 const toUint8Array = (wordArray: crypto.lib.WordArray) => {
@@ -73,8 +73,7 @@ const decrypt = (secret: crypto.lib.WordArray, data: ArrayBufferLike) => {
 export const createCodec = (key: string) => {
   const secret = crypto.MD5(key);
 
-  const serialize = <T>(data: T) =>
-    encrypt(secret, encode(data, { ignoreUndefined: true }));
+  const serialize = <T>(data: T) => encrypt(secret, encode(data));
 
   const deserialize = <T>(data: ArrayBufferLike) =>
     decode(decrypt(secret, data)) as T;

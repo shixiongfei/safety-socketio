@@ -10,7 +10,7 @@
  */
 
 import crypto, { BinaryLike } from "node:crypto";
-import { encode, decode } from "@msgpack/msgpack";
+import { decode, encode } from "msgpackr";
 import { ensureUint8Array, concatUint8Arrays } from "./utils.js";
 
 const encrypt = (secret: Buffer, data: BinaryLike) => {
@@ -30,8 +30,7 @@ const decrypt = (secret: Buffer, data: ArrayBufferLike) => {
 export const createCodec = (key: string) => {
   const secret = crypto.createHash("md5").update(key).digest();
 
-  const serialize = <T>(data: T) =>
-    encrypt(secret, encode(data, { ignoreUndefined: true }));
+  const serialize = <T>(data: T) => encrypt(secret, encode(data));
 
   const deserialize = <T>(data: ArrayBufferLike) =>
     decode(decrypt(secret, data)) as T;

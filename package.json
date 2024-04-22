@@ -43,9 +43,9 @@
   },
   "homepage": "https://github.com/shixiongfei/safety-socketio#readme",
   "dependencies": {
-    "@msgpack/msgpack": "^2.8.0",
     "component-emitter": "^2.0.0",
-    "crypto-js": "^4.2.0"
+    "crypto-js": "^4.2.0",
+    "msgpackr": "^1.10.1"
   },
   "devDependencies": {
     "@types/crypto-js": "^4.2.1",
