@@ -11,12 +11,12 @@
 
 import crypto, { BinaryLike } from "node:crypto";
 import { decode, encode } from "msgpackr";
-import { ensureUint8Array, concatUint8Arrays } from "./utils.js";
+import { ensureUint8Array } from "./utils.js";
 
 const encrypt = (secret: Buffer, data: BinaryLike) => {
   const iv = crypto.randomBytes(16);
   const cipher = crypto.createCipheriv("aes-128-ctr", secret, iv);
-  return concatUint8Arrays([iv, cipher.update(data), cipher.final()]);
+  return Buffer.concat([iv, cipher.update(data), cipher.final()]);
 };
 
 const decrypt = (secret: Buffer, data: ArrayBufferLike) => {
@@ -24,7 +24,7 @@ const decrypt = (secret: Buffer, data: ArrayBufferLike) => {
   const iv = buffer.subarray(0, 16);
   const content = buffer.subarray(16);
   const decipher = crypto.createDecipheriv("aes-128-ctr", secret, iv);
-  return concatUint8Arrays([decipher.update(content), decipher.final()]);
+  return Buffer.concat([decipher.update(content), decipher.final()]);
 };
 
 export const createCodec = (key: string) => {
